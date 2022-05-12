@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="description" content="Left 4 Dead 2 addon manager">
+        <title>Left 2 Load - A L4D2 addon manager</title>
+    </head>
+    <body>
+        <script src="addonList.js">
+            function getBasePath(p) {
+                return p.slice(0, 1 + p.lastIndexOf('/'));
+            };
+            function initList() {
+                return new AddonList([
+                    {
+                        path: "workshop/foo.vpk",
+                        enabled: 1
+                    },
+                    {
+                        path: "workshop/bar.vpk",
+                        enabled: 1
+                    },
+                    {
+                        path: "workshop/baz.vpk",
+                        enabled: 0
+                    }
+                ]);
+            }
+            function showList() {
+                document.getElementById("listMount").innerText = initList().toString();
+            }
+            document.onload(event => {
+                showList();
+            })
+        </script>
+        <template class="addonViewTemplate">
+            <div class="addonView">
+                <span id="addonTitle"></span>
+                <span id="addonPath"></span>
+                <input id="addonEnabled" type="checkbox"></input>
+            </div>
+        </template>
+
+        <div id="root">
+            <span>hello world</span>
+            <div id="listMount"></div>
+        </div>
+    </body>
+</html>

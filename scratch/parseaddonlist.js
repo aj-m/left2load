@@ -1,0 +1,5 @@
+const fs = require('fs')
+contents = fs.readFileSync('K:/SteamLibrary/steamapps/common/Left 4 Dead 2/left4dead2/addonlist.txt').toString()
+contents.slice(12).split('\n').slice(1,-2).map(item => item.trim().replaceAll('"','').split('\t\t'))
+contents.slice(12).split('\n').slice(1,-2).map(item => item.trim().replaceAll('"','').split('\t\t')).map(item => ({path: item[0], enabled: !!item[1]}))
+contents.slice(12).split('\n').slice(1,-2).map(item => item.trim().replaceAll('"','').split('\t\t')).map(item => ({path: item[0], enabled: item[1]==="1"}))
