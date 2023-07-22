@@ -15,10 +15,13 @@ class AddonList {
                     // copy!
                     this.addons = data.addons.slice();
                 } else if(Array.isArray(data)) {
-                    if(!data.all(element => element.path && typeof element.enabled === 'boolean')) {
+                    if(data.some(element => !element.path || typeof element.enabled !== 'boolean')) {
                         throw 'invalid addon list array';
                     } else {
-                        this.addons = data;
+                        this.addons = data.map((addon, ndx) => ({
+                            ...addon,
+                            position: ndx
+                        }))
                     }
                 }
                 break;
@@ -30,11 +33,11 @@ class AddonList {
         }
         //this.addons = AddonList.deserialize(data);
     }
-    static deserialize(serialized) {
-        if(serialized.slice(1,10) !== "AddonList") {
+    static deserialize(data) {
+        if(data.slice(1,10) !== "AddonList") {
             throw "invalid input file";
         }
-        const infoLines = contents.match(/".*?"\s*"(0|1)"/g).map(line => line.replaceAll('"','').split(/\s+/));
+        const infoLines = data.match(/".*?"\s*"(0|1)"/g).map(line => line.replaceAll('"','').split(/\s+/));
         const addonEntries = infoLines.map((entry, ndx) => ({
             path: entry[0],
             enabled: entry[1] === "1",
@@ -48,11 +51,19 @@ class AddonList {
     toArray() {
         return this.addons;
     }
-    toString() {
-        const serializeLine = ({path, enabled}) => `\t"${path}"\t\t"${enabled ? 1 : 0}"\n`
+    toString(crlf=false) {
+        const endl = crlf ? "\r\n" : "\n"
+        const serializeLine = ({path, enabled}) => `\t"${path}"\t\t"${enabled ? 1 : 0}"${endl}`
         const serialized = this.addons.map(serializeLine).join('');
-        return `"AddonList"\n{\n${serialized}}\n`
+        return `"AddonList"${endl}{${endl}${serialized}}${endl}`
+    }
+    static getTestArray() {
+        return [
+            { path: "workshop\\foo.vpk", enabled: true, position: 0 },
+            { path: "workshop\\bar.vpk", enabled: false, position: 1 },
+            { path: "workshop\\qux.vpk", enabled: true, position: 2 },
+        ]
     }
 }
 
-module.exports = AddonList;
+//module.exports = AddonList;
