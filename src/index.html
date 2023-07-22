@@ -5,8 +5,9 @@
         <meta name="description" content="Left 4 Dead 2 addon manager">
         <title>Left 2 Load - A L4D2 addon manager</title>
     </head>
-    <body>
-        <script src="addonList.js">
+    <body onload="showList()">
+        <script src="addonList.js"></script>
+        <script>
             function getBasePath(p) {
                 return p.slice(0, 1 + p.lastIndexOf('/'));
             };
@@ -14,35 +15,50 @@
                 return new AddonList([
                     {
                         path: "workshop/foo.vpk",
-                        enabled: 1
+                        enabled: true
                     },
                     {
                         path: "workshop/bar.vpk",
-                        enabled: 1
+                        enabled: true
                     },
                     {
                         path: "workshop/baz.vpk",
-                        enabled: 0
+                        enabled: false
                     }
                 ]);
             }
             function showList() {
-                document.getElementById("listMount").innerText = initList().toString();
+                //document.getElementById("listMount").innerText = initList().toString();
+                let listData = initList();
+                //let listTmp = document.getElementId("addonListTemplate");
+                //let avTmp = document.getElementById("addonViewTemplate");
+                //let newList = listTmp.content.cloneNode(true);
+                //for(let i = 0; i < listData.length; i++) {
+                //    let newView = avTmp.content.cloneNode(true);
+                //    newView.content
+                //}
+
+                let newList = document.getElementById("addonViewTemplate").content.cloneNode(true);
+
+
+
+                
+                document.getElementById("listMount").appendChild(newList);
             }
-            document.onload(event => {
-                showList();
-            })
         </script>
-        <template class="addonViewTemplate">
-            <div class="addonView">
-                <span id="addonTitle"></span>
-                <span id="addonPath"></span>
-                <input id="addonEnabled" type="checkbox"></input>
+        <template id="addonListTemplate">
+            <div name="addonList" class="addonListView"></div>
+        </template>
+        <template id="addonViewTemplate">
+            <div id="addon" class="addonView" style="border: 1px solid red"">
+                <span name="addonTitle">unknown title</span>
+                <span name="addonPath">some path</span>
+                <input name="addonEnabled" type="checkbox"></input>
             </div>
         </template>
 
         <div id="root">
-            <span>hello world</span>
+            <span id="greetingSpan" style="border: 1px dashed gray">hello world</span>
             <div id="listMount"></div>
         </div>
     </body>
